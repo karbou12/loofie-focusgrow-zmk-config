@@ -1,50 +1,165 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 30
+#include <dt-bindings/zmk/pointing.h>
+#include "us_keymap.h"
+
+//╭──────┬────┬────┬────┬────┬────╮           ╭────┬────┬────┬────┬────┬────┬──────╮
+//|  0   |  1 |  2 |  3 |  4 |  5 |           |  6 |  7 |  8 |  9 | 10 | 12 |  24  |
+//├──────┴┬───┴┬───┴┬───┴┬───┴┬───┴╮          ╰┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴╮     |
+//|   13  | 14 | 15 | 16 | 17 | 18 |           | 19 | 20 | 21 | 22 | 23 | 11 |     |
+//├───────┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──╮        ╰──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴─────┤
+//|   25     | 26 | 27 | 28 | 29 | 30 |           | 31 | 32 | 33 | 34 | 35 |   36  |
+//├─────┬────┴┬───┴─┬──┴─┬──┴────┴──┬─╯          ╭┴────┴───┬┴────┼────┴┬───┴─┬─────┤
+//|  37 |  38 |  39 | 40 |    41    |            |   42    |  43 |  44 |  45 |  46 |
+//╰─────┴─────┴─────┴────┴──────────╯            ╰─────────┴─────┴─────┴─────┴─────╯
+
+#define LEFT_TOP      0  1  2  3  4  5
+#define RIGHT_TOP     6  7  8  9 10 11
+#define RIGHT_ISO     12
+#define LEFT_MID      13 14 15 16 17 18
+#define RIGHT_MID     19 20 21 22 23 24
+#define LEFT_BOTTOM   25 26 27 28 29 30
+#define RIGHT_BOTTOM  31 32 33 34 35 36
+#define LEFT_THUMBS   37 38 39 40 41
+#define RIGHT_THUMBS  42 43 44 45 46
+#define LEFT_KEYS LEFT_TOP LEFT_MID LEFT_BOTTOM
+#define RIGHT_KEYS RIGHT_TOP RIGHT_ISO RIGHT_MID RIGHT_BOTTOM
+#define THUMBS LEFT_THUMBS RIGHT_THUMBS
 
 / {
+    behaviors {
+        mtb: mt_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <180>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        hml: home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <150>;
+            tapping-term-ms = <400>;
+            quick-tap-ms = <180>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <THUMBS RIGHT_KEYS>;
+            hold-trigger-on-release;
+        };
+
+        hmr: home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <150>;
+            tapping-term-ms = <400>;
+            quick-tap-ms = <180>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <THUMBS LEFT_KEYS>;
+            hold-trigger-on-release;
+        };
+
+        ht_tp: hold_tap_tap_preferred {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOLD_TAP_TAP_PREFERRSED";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
     combos {
         compatible = "zmk,combos";
-
-        combo_f10 {
-            key-positions = <2 3>;
-            bindings = <&kp F10>;
+        combo_capsword {
+            timeout-ms = <50>;
+            key-positions = <25 36>;
+            bindings = <&caps_word>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        default_layer {
+#define LAYER(s) MAC_##s##_layer
+
+        LAYER(base) {
             bindings = <
-                &kp TAB             &kp Q  &kp W  &kp E  &kp R  &kp T       &kp Y        &kp U  &kp I      &kp O    &kp P      &kp BSLH  &kp BSPC
-                &kp LCTRL           &kp A  &kp S  &kp D  &kp F  &kp G       &kp H        &kp J  &kp K      &kp L    &kp SEMI   &kp ENTER
-                &mt LSHFT LPAR      &kp Z  &kp X  &kp C  &kp V  &kp B       &kp N        &kp M  &kp COMMA  &kp DOT  &kp FSLH   &mt RSHFT RPAR
-                &kp ESC  &lt 1 F10  &kp LALT  &kp LGUI  &lt 2 SPACE         &lt 1 MINUS  &kp RGUI  &kp RALT  &kp LBKT  &kp RBKT
+                MAC_QAZ40_BASE_LEFT_TOP                 MAC_QAZ40_BASE_RIGHT_TOP     &kp RET
+                MAC_QAZ40_BASE_LEFT_MIDDLE              MAC_QAZ40_BASE_RIGHT_MIDDLE
+                MAC_QAZ40_BASE_LEFT_BOTTOM              MAC_QAZ40_BASE_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_BASE_LEFT_THUMBS  MAC_QAZ_BASE_RIGHT_THUMBS    &none  &none
             >;
         };
-        NUM {
+
+        LAYER(raise) {
             bindings = <
-                &kp GRAVE  &trans  &kp N1  &kp N2  &kp N3  &kp DOT       &trans  &trans  &trans  &trans  &trans   &trans  &trans
-                &trans     &trans  &kp N4  &kp N5  &kp N6  &kp MINUS     &trans  &trans  &trans  &trans  &kp SQT  &trans
-                &trans     &trans  &kp N7  &kp N8  &kp N9  &kp N0        &trans  &trans  &trans  &trans  &trans   &trans
-                &trans     &trans  &mo 3   &trans  &kp EQUAL             &trans  &trans  &trans  &trans  &trans
+                MAC_QAZ40_RAISE_LEFT_TOP                 MAC_QAZ40_RAISE_RIGHT_TOP     &trans
+                MAC_QAZ40_RAISE_LEFT_MIDDLE              MAC_QAZ40_RAISE_RIGHT_MIDDLE
+                MAC_QAZ40_RAISE_LEFT_BOTTOM              MAC_QAZ40_RAISE_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_RAISE_LEFT_THUMBS  MAC_QAZ_RAISE_RIGHT_THUMBS    &none  &none
             >;
         };
-        ARROW {
+
+        LAYER(lower) {
             bindings = <
-                &trans  &trans  &trans  &trans  &trans  &trans     &trans    &trans     &trans     &trans     &trans  &trans  &trans
-                &trans  &trans  &trans  &trans  &trans  &trans     &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &trans  &trans
-                &trans  &trans  &trans  &trans  &trans  &trans     &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &trans  &trans
-                &trans  &trans  &trans  &trans  &trans             &trans    &trans     &trans     &trans     &trans
+                MAC_QAZ40_LOWER_LEFT_TOP                 MAC_QAZ40_LOWER_RIGHT_TOP     &trans
+                MAC_QAZ40_LOWER_LEFT_MIDDLE              MAC_QAZ40_LOWER_RIGHT_MIDDLE
+                MAC_QAZ40_LOWER_LEFT_BOTTOM              MAC_QAZ40_LOWER_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_LOWER_LEFT_THUMBS  MAC_QAZ_LOWER_RIGHT_THUMBS    &none  &none
             >;
         };
-        SYSTEM {
+
+        LAYER(adjust) {
             bindings = <
-                &trans  &trans  &trans  &trans  &trans  &trans     &trans          &trans         &trans         &trans  &trans  &trans  &bootloader
-                &trans  &trans  &trans  &trans  &trans  &trans     &bt BT_SEL 0    &bt BT_SEL 1   &bt BT_SEL 2   &trans  &trans  &bt BT_CLR
-                &trans  &trans  &trans  &trans  &trans  &trans     &bt BT_DISC 0   &bt BT_DISC 1  &bt BT_DISC 2  &trans  &trans  &trans
-                &trans  &trans  &trans  &trans  &trans             &studio_unlock  &trans         &trans         &trans  &bt BT_CLR_ALL
+                MAC_QAZ40_ADJUST_LEFT_TOP                 MAC_QAZ40_ADJUST_RIGHT_TOP     &trans
+                MAC_QAZ40_ADJUST_LEFT_MIDDLE              MAC_QAZ40_ADJUST_RIGHT_MIDDLE
+                MAC_QAZ40_ADJUST_LEFT_BOTTOM              MAC_QAZ40_ADJUST_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_ADJUST_LEFT_THUMBS  MAC_QAZ_ADJUST_RIGHT_THUMBS    &none  &bootloader
+            >;
+        };
+
+#undef LAYER
+#define LAYER(s) WIN_##s##_layer
+
+        LAYER(base) {
+            bindings = <
+                WIN_QAZ40_BASE_LEFT_TOP                 WIN_QAZ40_BASE_RIGHT_TOP     &trans
+                WIN_QAZ40_BASE_LEFT_MIDDLE              WIN_QAZ40_BASE_RIGHT_MIDDLE
+                WIN_QAZ40_BASE_LEFT_BOTTOM              WIN_QAZ40_BASE_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_BASE_LEFT_THUMBS  WIN_QAZ_BASE_RIGHT_THUMBS    &none  &none
+            >;
+        };
+
+        LAYER(raise) {
+            bindings = <
+                WIN_QAZ40_RAISE_LEFT_TOP                 WIN_QAZ40_RAISE_RIGHT_TOP     &trans
+                WIN_QAZ40_RAISE_LEFT_MIDDLE              WIN_QAZ40_RAISE_RIGHT_MIDDLE
+                WIN_QAZ40_RAISE_LEFT_BOTTOM              WIN_QAZ40_RAISE_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_RAISE_LEFT_THUMBS  WIN_QAZ_RAISE_RIGHT_THUMBS    &none  &none
+            >;
+        };
+
+        LAYER(lower) {
+            bindings = <
+                WIN_QAZ40_LOWER_LEFT_TOP                 WIN_QAZ40_LOWER_RIGHT_TOP     &trans
+                WIN_QAZ40_LOWER_LEFT_MIDDLE              WIN_QAZ40_LOWER_RIGHT_MIDDLE
+                WIN_QAZ40_LOWER_LEFT_BOTTOM              WIN_QAZ40_LOWER_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_LOWER_LEFT_THUMBS  WIN_QAZ_LOWER_RIGHT_THUMBS    &none  &none
+            >;
+        };
+
+        LAYER(adjust) {
+            bindings = <
+                WIN_QAZ40_ADJUST_LEFT_TOP                 WIN_QAZ40_ADJUST_RIGHT_TOP     &trans
+                WIN_QAZ40_ADJUST_LEFT_MIDDLE              WIN_QAZ40_ADJUST_RIGHT_MIDDLE
+                WIN_QAZ40_ADJUST_LEFT_BOTTOM              WIN_QAZ40_ADJUST_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_ADJUST_LEFT_THUMBS  WIN_QAZ_ADJUST_RIGHT_THUMBS    &none  &none
             >;
         };
     };
