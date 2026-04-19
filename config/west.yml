@@ -1,17 +1,19 @@
 manifest:
   defaults:
-    revision: v0.3
+    revision: main
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
     - name: MogmaProducts
       url-base: https://github.com/MogmaProducts
+    - name: karbou12
+      url-base: https://github.com/karbou12
   projects:
     - name: zmk
       remote: zmkfirmware
       import: app/west.yml
     - name: loofie-focusgrow-zmk-module
-      remote: MogmaProducts
-      revision: main
+      remote: karbou12
+      revision: develop
   self:
     path: config
