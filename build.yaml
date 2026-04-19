@@ -19,13 +19,13 @@
 #
 ---
 include:
-  - board: xiao_ble/nrf54840/zmk
+  - board: xiao_ble/nrf52840/zmk
     shield: LoofieFocusGrow_US
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_STUDIO=y
     artifact-name: LoofieFocusGrow_US
 
-  - board: xiao_ble/nrf54840/zmk
+  - board: xiao_ble/nrf52840/zmk
     shield: LoofieFocusGrow_ISO
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_STUDIO=y
