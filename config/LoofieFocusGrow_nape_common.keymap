@@ -1,0 +1,342 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 30
+#include <dt-bindings/zmk/pointing.h>
+#include <input/processors.dtsi>
+/* #include <behaviors/pmw3610_rotation.dtsi> */
+#include "us_keymap.h"
+
+//╭──────┬────┬────┬────┬────┬────╮           ╭────┬────┬────┬────┬────┬────┬──────╮
+//|  0   |  1 |  2 |  3 |  4 |  5 |           |  6 |  7 |  8 |  9 | 10 | 12 |  24  |
+//├──────┴┬───┴┬───┴┬───┴┬───┴┬───┴╮          ╰┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴╮     |
+//|   13  | 14 | 15 | 16 | 17 | 18 |           | 19 | 20 | 21 | 22 | 23 | 11 |     |
+//├───────┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──╮        ╰──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┴─────┤
+//|   25     | 26 | 27 | 28 | 29 | 30 |           | 31 | 32 | 33 | 34 | 35 |   36  |
+//├─────┬────┴┬───┴─┬──┴─┬──┴────┴──┬─╯          ╭┴────┴───┬┴────┼────┴┬───┴─┬─────┤
+//|  37 |  38 |  39 | 40 |    41    |            |   42    |  43 |  44 |  45 |  46 |
+//╰─────┴─────┴─────┴────┴──────────╯            ╰─────────┴─────┴─────┴─────┴─────╯
+
+// Nape Front
+//╭────┬────┬────┬────╮
+//| 47 | TB | 48 | 49 |
+//╰────┴────┴────┴────╯
+// Nape Back from 1
+//╭────┬────┬────╮
+//| 50 | 51 | 52 |
+//╰────┴────┴────╯
+
+#define LEFT_TOP      0  1  2  3  4  5
+#define RIGHT_TOP     6  7  8  9 10 11
+#define RIGHT_ISO     12
+#define LEFT_MID      13 14 15 16 17 18
+#define RIGHT_MID     19 20 21 22 23 24
+#define LEFT_BOTTOM   25 26 27 28 29 30
+#define RIGHT_BOTTOM  31 32 33 34 35 36
+#define LEFT_THUMBS   37 38 39 40 41
+#define RIGHT_THUMBS  42 43 44 45 46
+#define LEFT_KEYS LEFT_TOP LEFT_MID LEFT_BOTTOM
+#define RIGHT_KEYS RIGHT_TOP RIGHT_ISO RIGHT_MID RIGHT_BOTTOM
+#define THUMBS LEFT_THUMBS RIGHT_THUMBS
+
+// For Nape
+// Layer 0-7 are used for normal keymap.
+#define L_SCROLL      8
+#define L_TB_SHIFT    9
+#define L_SNIPE      10
+#define L_TAB        11
+#define LEFT_SPACE   LC(LEFT)
+#define RIGHT_SPACE  LC(RIGHT)
+#define MISSION_CTRL LC(UP)
+#define EXPOSE       LC(DOWN)
+#define LEFT_TAB     LS(LC(TAB))
+#define RIGHT_TAB    LC(TAB)
+
+// macro with globe
+#define APP_LIST   globe_macro LS(A)
+#define MAX_WIN    globe_macro LC(F)
+
+// not define because globe is ignored in these cases....
+// #define USE_GLOBE_CTRL
+#ifdef USE_GLOBE_CTRL
+#define MV_LEFT_WIN   globe_macro LC(LEFT)
+#define MV_RIGHT_WIN  globe_macro LC(RIGHT)
+#define MV_UP_WIN     globe_macro LC(UP)
+#define MV_DOWN_WIN   globe_macro LC(DOWN)
+#else
+// shortcut with BetterTouchTool
+#define MV_LEFT_WIN   kp LS(LG(LEFT))
+#define MV_RIGHT_WIN  kp LS(LG(RIGHT))
+#define MV_UP_WIN     kp LS(LG(UP))
+#define MV_DOWN_WIN   kp LS(LG(DOWN))
+#endif
+
+/ {
+    behaviors {
+        mtb: mt_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <180>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        hml: home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <150>;
+            tapping-term-ms = <400>;
+            quick-tap-ms = <180>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <THUMBS RIGHT_KEYS>;
+            hold-trigger-on-release;
+        };
+
+        hmr: home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <150>;
+            tapping-term-ms = <400>;
+            quick-tap-ms = <180>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <THUMBS LEFT_KEYS>;
+            hold-trigger-on-release;
+        };
+
+        ht_tp: hold_tap_tap_preferred {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            bindings = <&kp>, <&kp>;
+        };
+
+    };
+
+    combos {
+        compatible = "zmk,combos";
+        combo_capsword {
+            timeout-ms = <50>;
+            key-positions = <25 36>;
+            bindings = <&caps_word>;
+        };
+    };
+
+    // for Nape
+    behaviors {
+        lt_mkp: lt_mkp {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&mo>, <&mkp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+        };
+
+        it_mkp: interrupted_mkp {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&mo>, <&mkp>;
+            flavor = "tap-unless-interrupted";
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+        };
+
+        mod_mkp: mod_mkp {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&kp>, <&mkp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+        };
+
+        td_scrl_mb3_tbs: td_scrl_mb3_tbs {
+            compatible = "zmk,behavior-tap-dance";
+            bindings = <&mo L_SCROLL>, <&lt_mkp L_TB_SHIFT MB3>;
+            #binding-cells = <0>;
+            tapping-term-ms = <300>;
+        };
+
+        lt_globe_macro: lt_globe_macro {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&mo>, <&globe_macro>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+        };
+    };
+
+    macro {
+        globe_macro: globe_macro {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_press   &kp GLOBE>
+                , <&macro_param_1to1>
+                , <&macro_tap     &kp MACRO_PLACEHOLDER>
+                , <&macro_release &kp GLOBE>
+                ;
+        };
+    };
+
+    combos_nape {
+        compatible = "zmk,combos";
+        /* combo_mouse_gester { */
+        /*     bindings = <&mouse_gesture>; */
+        /*     key-positions = <48 49>; */
+        /*     timeout-ms = <50>; */
+        /* }; */
+
+        combo_center_win_snipe_layer {
+            bindings = <&lt_globe_macro L_SNIPE LC(C)>;
+            key-positions = <47 48>;
+            timeout-ms = <50>;
+        };
+
+        combo_max_win {
+            bindings = <&MAX_WIN>;
+            key-positions = <47 48 49>;
+            timeout-ms = <50>;
+        };
+
+        combo_app_list {
+            bindings = <&APP_LIST>;
+            key-positions = <47 49>;
+            timeout-ms = <50>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+#define LAYER(s) MAC_##s##_layer
+
+        LAYER(base) {
+            bindings = <
+                MAC_QAZ40_BASE_LEFT_TOP                 MAC_QAZ40_BASE_RIGHT_TOP     &kp RET
+                MAC_QAZ40_BASE_LEFT_MIDDLE              MAC_QAZ40_BASE_RIGHT_MIDDLE
+                MAC_QAZ40_BASE_LEFT_BOTTOM              MAC_QAZ40_BASE_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_BASE_LEFT_THUMBS  MAC_QAZ_BASE_RIGHT_THUMBS    &none  &none
+                &td_scrl_mb3_tbs  &lt_mkp L_TAB MB2  &it_mkp L_TAB MB1  &none &none &none
+            >;
+        };
+
+        LAYER(raise) {
+            bindings = <
+                MAC_QAZ40_RAISE_LEFT_TOP                 MAC_QAZ40_RAISE_RIGHT_TOP     &trans
+                MAC_QAZ40_RAISE_LEFT_MIDDLE              MAC_QAZ40_RAISE_RIGHT_MIDDLE
+                MAC_QAZ40_RAISE_LEFT_BOTTOM              MAC_QAZ40_RAISE_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_RAISE_LEFT_THUMBS  MAC_QAZ_RAISE_RIGHT_THUMBS    &none  &none
+                &trans &trans &trans                     &trans &trans &trans
+            >;
+        };
+
+        LAYER(lower) {
+            bindings = <
+                MAC_QAZ40_LOWER_LEFT_TOP                 MAC_QAZ40_LOWER_RIGHT_TOP     &trans
+                MAC_QAZ40_LOWER_LEFT_MIDDLE              MAC_QAZ40_LOWER_RIGHT_MIDDLE
+                MAC_QAZ40_LOWER_LEFT_BOTTOM              MAC_QAZ40_LOWER_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_LOWER_LEFT_THUMBS  MAC_QAZ_LOWER_RIGHT_THUMBS    &none  &none
+                &trans &trans &trans                     &trans &trans &trans
+            >;
+        };
+
+        LAYER(adjust) {
+            bindings = <
+                MAC_QAZ40_ADJUST_LEFT_TOP                 MAC_QAZ40_ADJUST_RIGHT_TOP     &trans
+                MAC_QAZ40_ADJUST_LEFT_MIDDLE              MAC_QAZ40_ADJUST_RIGHT_MIDDLE
+                MAC_QAZ40_ADJUST_LEFT_BOTTOM              MAC_QAZ40_ADJUST_RIGHT_BOTTOM
+                &none  &none  MAC_QAZ_ADJUST_LEFT_THUMBS  MAC_QAZ_ADJUST_RIGHT_THUMBS    &none  &bootloader
+                &trans &trans &trans                     &trans &trans &trans
+            >;
+        };
+
+#undef LAYER
+#define LAYER(s) WIN_##s##_layer
+
+        LAYER(base) {
+            bindings = <
+                WIN_QAZ40_BASE_LEFT_TOP                 WIN_QAZ40_BASE_RIGHT_TOP     &trans
+                WIN_QAZ40_BASE_LEFT_MIDDLE              WIN_QAZ40_BASE_RIGHT_MIDDLE
+                WIN_QAZ40_BASE_LEFT_BOTTOM              WIN_QAZ40_BASE_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_BASE_LEFT_THUMBS  WIN_QAZ_BASE_RIGHT_THUMBS    &none  &none
+                &trans &trans &trans                     &trans &trans &trans
+            >;
+        };
+
+        LAYER(raise) {
+            bindings = <
+                WIN_QAZ40_RAISE_LEFT_TOP                 WIN_QAZ40_RAISE_RIGHT_TOP     &trans
+                WIN_QAZ40_RAISE_LEFT_MIDDLE              WIN_QAZ40_RAISE_RIGHT_MIDDLE
+                WIN_QAZ40_RAISE_LEFT_BOTTOM              WIN_QAZ40_RAISE_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_RAISE_LEFT_THUMBS  WIN_QAZ_RAISE_RIGHT_THUMBS    &none  &none
+                &trans &trans &trans                     &trans &trans &trans
+            >;
+        };
+
+        LAYER(lower) {
+            bindings = <
+                WIN_QAZ40_LOWER_LEFT_TOP                 WIN_QAZ40_LOWER_RIGHT_TOP     &trans
+                WIN_QAZ40_LOWER_LEFT_MIDDLE              WIN_QAZ40_LOWER_RIGHT_MIDDLE
+                WIN_QAZ40_LOWER_LEFT_BOTTOM              WIN_QAZ40_LOWER_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_LOWER_LEFT_THUMBS  WIN_QAZ_LOWER_RIGHT_THUMBS    &none  &none
+                &trans &trans &trans                     &trans &trans &trans
+            >;
+        };
+
+        LAYER(adjust) {
+            bindings = <
+                WIN_QAZ40_ADJUST_LEFT_TOP                 WIN_QAZ40_ADJUST_RIGHT_TOP     &trans
+                WIN_QAZ40_ADJUST_LEFT_MIDDLE              WIN_QAZ40_ADJUST_RIGHT_MIDDLE
+                WIN_QAZ40_ADJUST_LEFT_BOTTOM              WIN_QAZ40_ADJUST_RIGHT_BOTTOM
+                &none  &none  WIN_QAZ_ADJUST_LEFT_THUMBS  WIN_QAZ_ADJUST_RIGHT_THUMBS    &none  &none
+                &trans &trans &trans                      &trans &trans &trans
+            >;
+        };
+
+        NapeScrollLayer {
+            bindings = <
+                QAZ40_NONE  QAZ40_NONE  &trans
+                QAZ40_NONE  QAZ40_NONE
+                QAZ40_NONE  QAZ40_NONE
+                QAZ_NONE    QAZ_NONE
+                &none  &mkp MB5  &mkp MB4                 &trans &trans &trans
+            >;
+        };
+
+        NapeTraboShiftLayer {
+            bindings = <
+                QAZ40_NONE  QAZ40_NONE  &trans
+                QAZ40_NONE  QAZ40_NONE
+                QAZ40_NONE  QAZ40_NONE
+                QAZ_NONE    QAZ_NONE
+                &none  &none  &none  &trans &trans &trans
+                /* &none  &tb_rot_45 ROT_CW  &tb_rot_45 RTO_CCW  &trans &trans &trans */
+            >;
+        };
+
+        NapeSnipeLayer {
+            bindings = <
+                QAZ40_NONE  QAZ40_NONE  &trans
+                QAZ40_NONE  QAZ40_NONE
+                QAZ40_NONE  QAZ40_NONE
+                QAZ_NONE    QAZ_NONE
+                &mkp MB3  &mkp MB2  &mkp MB1  &trans &trans &trans
+            >;
+        };
+
+        NapeTabLayer {
+            bindings = <
+                QAZ40_NONE  QAZ40_NONE  &trans
+                QAZ40_NONE  QAZ40_NONE
+                QAZ40_NONE  QAZ40_NONE
+                QAZ_NONE    QAZ_NONE
+                /* &mouse_gesture  &kp RIGHT_TAB  &kp LEFT_TAB  &trans &trans &trans */
+                &none  &kp RIGHT_TAB  &kp LEFT_TAB  &trans &trans &trans
+            >;
+        };
+    };
+};
