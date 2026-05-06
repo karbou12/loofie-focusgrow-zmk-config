@@ -4,7 +4,7 @@
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 30
 #include <dt-bindings/zmk/pointing.h>
 #include <input/processors.dtsi>
-/* #include <behaviors/pmw3610_rotation.dtsi> */
+#include <behaviors/trackball_shift_rotation.dtsi>
 #include <mouse-gesture.dtsi>
 #include "us_keymap.h"
 
@@ -395,8 +395,7 @@
                 QAZ40_NONE  QAZ40_NONE
                 QAZ40_NONE  QAZ40_NONE
                 QAZ_NONE    QAZ_NONE
-                &none  &none  &none  &trans &trans &trans
-                /* &none  &tb_rot_45 ROT_CW  &tb_rot_45 RTO_CCW  &trans &trans &trans */
+                &none  &tb_rot_45 TB_ROT_CW  &tb_rot_45 TB_ROT_CCW  &trans &trans &trans
             >;
         };
     };
