@@ -8,6 +8,10 @@ manifest:
       url-base: https://github.com/MogmaProducts
     - name: karbou12
       url-base: https://github.com/karbou12
+    - name: amgskobo
+      url-base: https://github.com/amgskobo
+    - name: kot149
+      url-base: https://github.com/kot149
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -15,5 +19,14 @@ manifest:
     - name: loofie-focusgrow-zmk-module
       remote: karbou12
       revision: develop
+    - name: zmk-input-inertia
+      remote: karbou12
+      revision: develop
+    - name: zmk-mouse-gesture
+      remote: kot149
+      revision: v1
+    - name: zmk-trackball-shift
+      remote: karbou12
+      revision: main
   self:
     path: config
