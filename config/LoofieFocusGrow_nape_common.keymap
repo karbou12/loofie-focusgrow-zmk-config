@@ -151,6 +151,7 @@
 
             stroke-size = <100>; // default: 200
             enable-eager-mode;
+            always-active;
 
             ges_bri_dn {
                 pattern = <GESTURE_LEFT>;
@@ -230,7 +231,7 @@
             bindings = <&caps_word>;
         };
 
-        combo_mouse_gester {
+        combo_esc_scroll {
             bindings = <&lt L_SCROLL ESC>;
             key-positions = <48 49>;
             timeout-ms = <50>;
@@ -257,12 +258,22 @@
 
     // for Nape
     behaviors {
+        lt_td: lt_td {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&mo>, <&kp>;
+            hold-while-undecided;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <60>;
+        };
+
         lt_mkp: lt_mkp {
             compatible = "zmk,behavior-hold-tap";
             bindings = <&mo>, <&mkp>;
+            hold-while-undecided;
 
             #binding-cells = <2>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <60>;
         };
 
         it_mkp: interrupted_mkp {
@@ -284,23 +295,23 @@
 
         td_spc_scrl_lang_tbs: td_b1 {
             compatible = "zmk,behavior-tap-dance";
-            bindings = <&lt L_SCROLL SPACE>, <&lt_lang_macro L_TB_SHIFT SPACE>;
+            bindings = <&lt_td L_SCROLL SPACE>, <&lt_lang_macro L_TB_SHIFT SPACE>;
             #binding-cells = <0>;
-            tapping-term-ms = <300>;
+            tapping-term-ms = <240>;
         };
 
         td_mb2_mac_adjust_gest: td_b2_m {
             compatible = "zmk,behavior-tap-dance";
             bindings = <&lt_mkp MAC(ADJUST) MB2>, <&mouse_gesture>;
             #binding-cells = <0>;
-            tapping-term-ms = <300>;
+            tapping-term-ms = <240>;
         };
 
         td_mb2_win_adjust_gest: td_b2_w {
             compatible = "zmk,behavior-tap-dance";
             bindings = <&lt_mkp WIN(ADJUST) MB2>, <&mouse_gesture>;
             #binding-cells = <0>;
-            tapping-term-ms = <300>;
+            tapping-term-ms = <240>;
         };
 
         lt_globe_macro: lt_globe_macro {
