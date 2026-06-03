@@ -231,7 +231,7 @@
             bindings = <&caps_word>;
         };
 
-        combo_mouse_gester {
+        combo_esc_scroll {
             bindings = <&lt L_SCROLL ESC>;
             key-positions = <48 49>;
             timeout-ms = <50>;
