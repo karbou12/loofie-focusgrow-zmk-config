@@ -20,8 +20,8 @@ manifest:
       remote: karbou12
       revision: develop
     - name: zmk-input-inertia
-      remote: karbou12
-      revision: develop
+      remote: amgskobo
+      revision: main
     - name: zmk-mouse-gesture
       remote: kot149
       revision: v1
